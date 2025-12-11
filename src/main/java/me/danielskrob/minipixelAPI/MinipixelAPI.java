@@ -2,6 +2,7 @@ package me.danielskrob.minipixelAPI;
 
 import me.danielskrob.minipixelAPI.events.PlayerEvents;
 import me.danielskrob.minipixelAPI.placeholders.PlaceholderManager;
+import me.danielskrob.minipixelAPI.utils.PlayerApiUtils;
 import me.danielskrob.minipixelAPI.utils.SpectatorManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -11,12 +12,8 @@ public final class MinipixelAPI extends JavaPlugin {
     public void onEnable() {
         PlaceholderManager.init();
         SpectatorManager.init(this);
+        PlayerApiUtils.init(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
-    }
-
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic
     }
 }

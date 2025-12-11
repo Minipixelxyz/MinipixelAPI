@@ -21,23 +21,34 @@ public class SpectatorManager {
     }
 
     public static void hideFromEveryone(Player target) {
+        UUID targetId = target.getUniqueId();
+        spectators.add(targetId);
+
         for (Player viewer : Bukkit.getOnlinePlayers()) {
-            viewer.hidePlayer(plugin, target);
+            boolean viewerIsSpectator = spectators.contains(viewer.getUniqueId());
+
+            if (viewerIsSpectator) {
+                viewer.showPlayer(plugin, target);
+            } else {
+                viewer.hidePlayer(plugin, target);
+            }
         }
 
-        spectators.add(target.getUniqueId());
         target.setGameMode(GameMode.ADVENTURE);
         target.setInvulnerable(true);
-        target.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100000, 1, false, false));
+        target.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
     }
 
     public static void showToEveryone(Player target) {
+        UUID targetId = target.getUniqueId();
+        spectators.remove(targetId);
+
         for (Player viewer : Bukkit.getOnlinePlayers()) {
             viewer.showPlayer(plugin, target);
         }
 
-        spectators.remove(target.getUniqueId());
         target.setInvulnerable(false);
+        target.removePotionEffect(PotionEffectType.INVISIBILITY);
     }
 
     public static Set<UUID> getSpectators() {
