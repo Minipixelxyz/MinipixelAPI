@@ -4,6 +4,7 @@ import me.danielskrob.minipixelAPI.MinipixelAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,6 +41,7 @@ public class PlayerApiUtils {
 
                         startingPlayers.remove(player.getUniqueId());
                         player.setInvulnerable(false);
+                        player.setGameMode(GameMode.SURVIVAL);
 
                         cancel();
                         return;
