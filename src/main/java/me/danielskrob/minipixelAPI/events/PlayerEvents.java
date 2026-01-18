@@ -2,6 +2,7 @@ package me.danielskrob.minipixelAPI.events;
 
 import me.danielskrob.minipixelAPI.utils.PlayerApiUtils;
 import me.danielskrob.minipixelAPI.utils.SpectatorManager;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -79,10 +80,14 @@ public class PlayerEvents implements Listener {
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent e){
+    public void onMove(PlayerMoveEvent e) {
+        if (isStarting(e.getPlayer())) {
+            Location from = e.getFrom();
+            Location to = e.getTo();
 
-        if (e.getFrom() != e.getTo()){
-            if (isStarting(e.getPlayer())) e.setCancelled(true);
+            if (from.getX() != to.getX() || from.getY() != to.getY() || from.getZ() != to.getZ()) {
+                e.setTo(from.setDirection(to.getDirection()));
+            }
         }
     }
 }
