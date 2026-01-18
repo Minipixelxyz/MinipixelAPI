@@ -80,6 +80,9 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e){
-        if (isStarting(e.getPlayer())) e.setCancelled(true);
+
+        if (e.getFrom() != e.getTo()){
+            if (isStarting(e.getPlayer())) e.setCancelled(true);
+        }
     }
 }
