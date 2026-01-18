@@ -37,6 +37,9 @@ public class SpectatorManager {
         target.setGameMode(GameMode.ADVENTURE);
         target.setInvulnerable(true);
         target.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
+
+        target.setAllowFlight(true);
+        target.setFlying(true);
     }
 
     public static void showToEveryone(Player target) {
@@ -49,6 +52,9 @@ public class SpectatorManager {
 
         target.setInvulnerable(false);
         target.removePotionEffect(PotionEffectType.INVISIBILITY);
+
+        target.setAllowFlight(false);
+        target.setFlying(false);
     }
 
     public static Set<UUID> getSpectators() {

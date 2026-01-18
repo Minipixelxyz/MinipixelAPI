@@ -1,5 +1,6 @@
 package me.danielskrob.minipixelAPI;
 
+import me.danielskrob.minipixelAPI.command_lock.CommandLockEvents;
 import me.danielskrob.minipixelAPI.events.PlayerEvents;
 import me.danielskrob.minipixelAPI.placeholders.PlaceholderManager;
 import me.danielskrob.minipixelAPI.utils.PlayerApiUtils;
@@ -15,5 +16,6 @@ public final class MinipixelAPI extends JavaPlugin {
         PlayerApiUtils.init(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
+        getServer().getPluginManager().registerEvents(new CommandLockEvents(), this);
     }
 }
