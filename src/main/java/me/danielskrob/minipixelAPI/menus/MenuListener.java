@@ -9,9 +9,8 @@ public class MenuListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        // Check if the inventory belongs to our Menu system
         if (event.getInventory().getHolder() instanceof BaseMenu menu) {
-            event.setCancelled(true); // Prevent players from stealing items
+            event.setCancelled(true);
 
             if (event.getClickedInventory() != null &&
                     event.getClickedInventory().equals(event.getInventory())) {

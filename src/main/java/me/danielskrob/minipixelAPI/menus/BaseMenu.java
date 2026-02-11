@@ -20,7 +20,6 @@ public abstract class BaseMenu implements InventoryHolder {
         this.inventory = Bukkit.createInventory(this, size, title);
     }
 
-    // Add an item and define what it does when clicked
     public void setItem(int slot, ItemStack item, Consumer<InventoryClickEvent> action) {
         inventory.setItem(slot, item);
         if (action != null) {
@@ -28,7 +27,6 @@ public abstract class BaseMenu implements InventoryHolder {
         }
     }
 
-    // Called by the Listener
     public void handleTrigger(InventoryClickEvent event) {
         Consumer<InventoryClickEvent> action = actions.get(event.getRawSlot());
         if (action != null) {
@@ -36,7 +34,6 @@ public abstract class BaseMenu implements InventoryHolder {
         }
     }
 
-    // Override this in your menu subclasses
     public void onMenuClose(InventoryCloseEvent event) {}
 
     @Override
