@@ -17,5 +17,7 @@ public final class MinipixelAPI extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new CommandLockEvents(), this);
+
+        //test
     }
 }
