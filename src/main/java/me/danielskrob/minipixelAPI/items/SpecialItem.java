@@ -1,15 +1,15 @@
 package me.danielskrob.minipixelAPI.items;
 
+import me.danielskrob.minipixelAPI.utils.ItemsManager;
 import me.danielskrob.minipixelAPI.utils.SpectatorManager;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
@@ -19,21 +19,33 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class SpecialItem {
+    public SpecialItem(Plugin plugin) {
+        this.plugin = plugin;
+
+        ItemsManager.items.put(getId(), this);
+    }
+    final private Plugin plugin;
+
     private static final List<ArmorStand> activeItems = new ArrayList<>();
 
     public abstract String getName();
+    public abstract String getId();
     public abstract String getDescription();
     public abstract ItemStack getItemStack();
     public abstract ChatColor getColor();
+
+    public NamespacedKey getItemKey() {
+        return new NamespacedKey(plugin, "special_item_type");
+    }
 
     private ItemStack getItem() {
 
         ItemStack item = getItemStack();
         ItemMeta meta = item.getItemMeta();
-        List<String> lore = new ArrayList<>(List.of(getDescription()));
 
+        meta.setLore(List.of(getDescription()));
+        meta.getPersistentDataContainer().set(getItemKey(), PersistentDataType.STRING, getId().toLowerCase());
         meta.setDisplayName(getColor() + getName());
-        meta.setLore(lore);
 
         item.setItemMeta(meta);
         return item;
