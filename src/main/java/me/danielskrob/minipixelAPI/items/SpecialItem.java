@@ -54,24 +54,49 @@ public abstract class SpecialItem {
     }
 
     public void spawnItem(Location location) {
-        ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
-        armorStand.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
+        World world = location.getWorld();
+        if (world == null) return;
 
-        armorStand.setCustomNameVisible(true);
-        armorStand.setCustomName(getName()); //TODO
-        armorStand.getEquipment().setItemInMainHand(getItem());
-        armorStand.setVisible(false);
-        armorStand.setGravity(false);
-        armorStand.addScoreboardTag("SpecialItemTag");
+        ArmorStand itemStand = world.spawn(location, ArmorStand.class, as -> {
+            as.setVisible(false);
+            as.setGravity(false);
+            as.setBasePlate(false);
+            as.setSmall(true);
+            as.setInvulnerable(true);
+            as.setRightArmPose(new EulerAngle(Math.toRadians(-15), Math.toRadians(0), Math.toRadians(0)));
 
-        activeItems.add(armorStand);
+            as.getEquipment().setItemInMainHand(getItem());
+            as.addScoreboardTag("SpecialItemTag");
+        });
+
+        List<String> lore = new ArrayList<>(getFloatingLore());
+        lore.add(0, getName());
+
+        double yOffset = 0.25;
+        for (int i = lore.size() - 1; i >= 0; i--) {
+            String line = lore.get(i);
+            if (line.isEmpty()) continue;
+
+            Location loreLoc = location.clone().add(0, yOffset, 0);
+            world.spawn(loreLoc, ArmorStand.class, as -> {
+                as.setMarker(true);
+                as.setVisible(false);
+                as.setGravity(false);
+                as.setCustomNameVisible(true);
+                as.setCustomName(ChatUtils.translateColorCodes(line));
+                as.addScoreboardTag("SpecialItemLoreTag");
+            });
+            yOffset += 0.23;
+        }
+
+        activeItems.add(itemStand);
     }
 
     public static void startCollisionTask(JavaPlugin plugin) {
         new BukkitRunnable() {
             @Override
             public void run() {
-                for (Iterator<ArmorStand> it = activeItems.iterator(); it.hasNext(); ) {
+                for (Iterator<ArmorStand> it = activeItems.iterator(); it.hasNext();) {
                     ArmorStand as = it.next();
 
                     if (!as.isValid()) {
@@ -99,11 +124,14 @@ public abstract class SpecialItem {
     }
 
     private static void pickup(Player player, ArmorStand as) {
-
-        player.getInventory().addItem(as.getEquipment().getItemInHand());
+        player.getInventory().addItem(as.getEquipment().getItemInMainHand());
         player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0f, 1.2f);
-        as.remove();
 
+        as.getNearbyEntities(1.0, 3.0, 1.0).stream()
+                .filter(e -> e.getScoreboardTags().contains("SpecialItemLoreTag"))
+                .forEach(Entity::remove);
+
+        as.remove();
         as.getWorld().spawnParticle(Particle.CLOUD, as.getLocation().add(0, 0.5, 0), 5, 0.1, 0.1, 0.1, 0.05);
     }
 }
