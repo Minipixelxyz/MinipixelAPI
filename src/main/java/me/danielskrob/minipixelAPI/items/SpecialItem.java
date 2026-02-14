@@ -57,36 +57,47 @@ public abstract class SpecialItem {
         World world = location.getWorld();
         if (world == null) return;
 
-        ArmorStand itemStand = world.spawn(location, ArmorStand.class, as -> {
+        // 1. Center the item and raise it slightly so it doesn't clip the ground
+        Location itemLoc = location.clone().add(0, 0.5, 0);
+
+        ArmorStand itemStand = world.spawn(itemLoc, ArmorStand.class, as -> {
             as.setVisible(false);
             as.setGravity(false);
             as.setBasePlate(false);
-            as.setSmall(true);
+            as.setSmall(false); // Keep the item itself big
             as.setInvulnerable(true);
-            as.setRightArmPose(new EulerAngle(Math.toRadians(-15), Math.toRadians(0), Math.toRadians(0)));
+
+            // This pose stands the item straight up vertically
+            as.setRightArmPose(new EulerAngle(Math.toRadians(-90), Math.toRadians(0), Math.toRadians(0)));
 
             as.getEquipment().setItemInMainHand(getItem());
             as.addScoreboardTag("SpecialItemTag");
         });
 
+        // 2. Setup the Floating Lore
         List<String> lore = new ArrayList<>(getFloatingLore());
-        lore.add(0, getName());
+        lore.add(0, getName()); // Name stays at the very top
 
-        double yOffset = 0.25;
+        // Start slightly above the ArmorStand's head
+        // Smaller increments (0.24) prevent that "stretched out" look
+        double yOffset = 1.2;
+
+        // Iterate in reverse to stack correctly: Bottom of lore list = bottom line in-game
         for (int i = lore.size() - 1; i >= 0; i--) {
             String line = lore.get(i);
             if (line.isEmpty()) continue;
 
-            Location loreLoc = location.clone().add(0, yOffset, 0);
+            Location loreLoc = itemLoc.clone().add(0, yOffset, 0);
             world.spawn(loreLoc, ArmorStand.class, as -> {
                 as.setMarker(true);
                 as.setVisible(false);
                 as.setGravity(false);
+                as.setSmall(true); // Small stands make the text labels tighter
                 as.setCustomNameVisible(true);
                 as.setCustomName(ChatUtils.translateColorCodes(line));
                 as.addScoreboardTag("SpecialItemLoreTag");
             });
-            yOffset += 0.23;
+            yOffset += 0.24; // Tight vertical spacing
         }
 
         activeItems.add(itemStand);
