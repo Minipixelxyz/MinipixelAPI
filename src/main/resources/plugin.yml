@@ -2,4 +2,4 @@ name: MinipixelAPI
 version: '1.0-SNAPSHOT'
 main: me.danielskrob.minipixelAPI.MinipixelAPI
 api-version: '1.21'
-depend: [PlaceholderAPI]
+depend: [PlaceholderAPI, DecentHolograms]

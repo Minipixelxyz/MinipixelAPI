@@ -15,7 +15,7 @@ public final class MinipixelAPI extends JavaPlugin {
         PlaceholderManager.init();
         SpectatorManager.init(this);
         PlayerApiUtils.init(this);
-        SpecialItem.startCollisionTask(this);
+        SpecialItem.startPickupTask(this);
 
         getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new CommandLockEvents(), this);
