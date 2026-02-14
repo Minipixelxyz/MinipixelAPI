@@ -1,6 +1,7 @@
 package me.danielskrob.minipixelAPI.items;
 
-import me.danielskrob.minipixelAPI.utils.ItemsManager;
+import me.danielskrob.minipixelAPI.utils.ChatUtils;
+import me.danielskrob.minipixelAPI.utils.ItemManager;
 import me.danielskrob.minipixelAPI.utils.SpectatorManager;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
@@ -19,53 +20,51 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class SpecialItem {
+
     public SpecialItem(Plugin plugin) {
         this.plugin = plugin;
 
-        ItemsManager.items.put(getId(), this);
+        ItemManager.items.put(getId(), this);
     }
+
     final private Plugin plugin;
 
     private static final List<ArmorStand> activeItems = new ArrayList<>();
 
-    public abstract String getName();
     public abstract String getId();
-    public abstract String getDescription();
-    public abstract ItemStack getItemStack();
-    public abstract ChatColor getColor();
+    public abstract Material getMaterial();
+    public abstract String getName();
+    public abstract List<String> getLore();
+    public abstract List<String> getFloatingLore();
 
     public NamespacedKey getItemKey() {
         return new NamespacedKey(plugin, "special_item_type");
     }
 
     private ItemStack getItem() {
-
-        ItemStack item = getItemStack();
+        ItemStack item = new ItemStack(getMaterial());
         ItemMeta meta = item.getItemMeta();
 
-        meta.setLore(List.of(getDescription()));
-        meta.getPersistentDataContainer().set(getItemKey(), PersistentDataType.STRING, getId().toLowerCase());
-        meta.setDisplayName(getColor() + getName());
+        meta.setDisplayName(ChatUtils.translateColorCodes(getName()));
+        meta.setLore(getLore().stream().map(ChatUtils::translateColorCodes).toList());
 
+        meta.getPersistentDataContainer().set(getItemKey(), PersistentDataType.STRING, getId().toLowerCase());
         item.setItemMeta(meta);
         return item;
     }
 
     public void spawnItem(Location location) {
-
-        ArmorStand armorStand =  (ArmorStand) location.getWorld().spawn(location, ArmorStand.class);
+        ArmorStand armorStand = location.getWorld().spawn(location, ArmorStand.class);
         armorStand.setRightArmPose(new EulerAngle(Math.toRadians(0), Math.toRadians(0), Math.toRadians(0)));
 
         armorStand.setCustomNameVisible(true);
-        armorStand.setCustomName(getColor() + getName());
+        armorStand.setCustomName(getName()); //TODO
         armorStand.getEquipment().setItemInMainHand(getItem());
-        armorStand.setSmall(true);
         armorStand.setVisible(false);
         armorStand.setGravity(false);
         armorStand.addScoreboardTag("SpecialItemTag");
 
         activeItems.add(armorStand);
-
     }
 
     public static void startCollisionTask(JavaPlugin plugin) {

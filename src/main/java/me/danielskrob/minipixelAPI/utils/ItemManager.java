@@ -8,9 +8,9 @@ import org.bukkit.plugin.Plugin;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemsManager {
+public class ItemManager {
 
-    public ItemsManager(Plugin plugin) {
+    public ItemManager(Plugin plugin) {
         this.plugin = plugin;
     }
 
