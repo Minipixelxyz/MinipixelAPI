@@ -60,4 +60,8 @@ public class SpectatorManager {
     public static Set<UUID> getSpectators() {
         return spectators;
     }
+
+    public static boolean isSpectator(Player player) {
+        return spectators.contains(player.getUniqueId());
+    }
 }
