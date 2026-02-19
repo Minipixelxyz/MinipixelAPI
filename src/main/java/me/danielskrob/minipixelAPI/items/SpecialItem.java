@@ -48,6 +48,7 @@ public abstract class SpecialItem {
     public abstract String getName();
     public abstract List<String> getLore();
     public abstract String getFloatingName();
+    public abstract int getSpawnRate();
 
     public NamespacedKey getItemKey() {
         return new NamespacedKey(plugin, "special_item_type");
